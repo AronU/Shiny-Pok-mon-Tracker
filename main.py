@@ -1,10 +1,11 @@
 from save_functions import save, init
-from datetime import datetime
+from datetime import datetime, timedelta
 import time 
 
 def main_menu(legendary_list):
     current_pokemon = None
     last_selected_menu = None
+    check_history = []
     while True:
         print("Here is a list of all Pokémon we are tracking currently and their count: \n")
         for dictionary in legendary_list:
@@ -25,6 +26,15 @@ def main_menu(legendary_list):
                         break
             except:
                 print("Current Pokémon: " + current_pokemon)
+        if len(check_history) > 0:
+            for i in range(len(check_history)):
+                if check_history[0] < datetime.now() - timedelta(hours=1):
+                    check_history.pop(0)
+                else:
+                    break
+        
+        print("Checks in the last 1 hour: " + str(len(check_history)))
+
     
         print("\nOperations: Save(S), Increase Pokémon(I), Decrease Pokémon(D), Select current hunt(P), Save and quit(Q)")
         main_menu_input = input("What would you like to do?: ").lower()
@@ -37,6 +47,8 @@ def main_menu(legendary_list):
         elif main_menu_input == "i":
             increase_count(legendary_list, current_pokemon)
             last_selected_menu = "i"
+            now = datetime.now()
+            check_history.append(now)
         elif main_menu_input == "d":
             decrease_count(legendary_list, current_pokemon)
             last_selected_menu = "d"
